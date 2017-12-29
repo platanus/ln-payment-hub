@@ -23,6 +23,7 @@ gem 'spring'
 gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
 gem 'versionist'
+gem 'grpc'
 
 group :production do
   gem 'rack-timeout'
@@ -36,7 +37,7 @@ group :development, :test do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'dotenv-rails'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'faker'
   gem 'guard-rspec', require: false
   gem 'pry-byebug'
@@ -52,3 +53,4 @@ end
 group :production, :development, :test do
   gem 'tzinfo-data'
 end
+

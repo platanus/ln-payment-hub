@@ -1,6 +1,6 @@
 require_relative 'boot'
-
 require 'rails/all'
+
 Bundler.require(*Rails.groups)
 
 module LndApi
@@ -16,8 +16,8 @@ module LndApi
     end
     config.i18n.default_locale = 'es-CL'
     config.i18n.fallbacks = [:es, :en]
-
     config.assets.paths << Rails.root.join('node_modules')
+    config.eager_load_paths << Rails.root.join('lib')
     config.load_defaults 5.1
   end
 end

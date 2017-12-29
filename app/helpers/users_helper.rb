@@ -1,11 +1,3 @@
-class User < ApplicationRecord
-  has_many :payments
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
-end
-
 # == Schema Information
 #
 # Table name: users
@@ -29,3 +21,6 @@ end
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
+
+module UsersHelper
+end
