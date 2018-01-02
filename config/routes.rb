@@ -3,9 +3,13 @@ Rails.application.routes.draw do
     api_version(module: "Api::V1", path: { value: "v1" }, defaults: { format: 'json' }) do
       resources :users, :only => [:show, :index, :create]
 
-      get   '/wallet_balance' => 'wallet#get_balance'
-      post  '/create_invoice' => 'payments#create'
-      post  '/pay_invoice'    => 'payments#pay_invoice'
+      get   '/wallet/balance' => 'wallet#get_balance'
+
+      post  '/users/create'   => 'users#create'
+      post  'get_user_status' => 'users#show'
+
+      post  '/payments/create_invoice' => 'payments#create'
+      post  '/payments/pay_invoice'    => 'payments#pay_invoice'
     end
   end
   devise_for :admin_users, ActiveAdmin::Devise.config

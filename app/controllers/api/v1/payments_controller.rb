@@ -22,9 +22,11 @@ class Api::V1::PaymentsController < ApplicationController
     user = params[:user]
     pay_req = params[:pay_req]
     pay_response = pay_payment_request(pay_req)
-
-    response = JSON.parse('{"pay_req": "'"#{pay_response}"'"}')
-    render json: response
+    response = JSON.parse('{"pay_req":
+                            {
+                              "payment_error":"'"#{pay_response.payment_error}"'"
+                              }}')
+    render json: response, status: 201
   end
 
   private
@@ -44,6 +46,5 @@ class Api::V1::PaymentsController < ApplicationController
     client = LightningService.new
     client.stub.send_payment_sync(request)
   end
-
 
 end

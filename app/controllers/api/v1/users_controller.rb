@@ -1,16 +1,31 @@
 class Api::V1::UsersController < ApplicationController
   respond_to :json
+  skip_before_action :verify_authenticity_token
 
   def show
     respond_with User.find(params[:id])
   end
 
   def create
-    user = User.new(user_params)
-    if user.save
-      render json: user, status: 201, location: [:api, user]
+    if User.find_by(slack_id: params[:slack_id])
+      response = JSON.parse('{"user":
+                            {
+                              "error":"User already exist"
+                              }}')
+      render json: response, status: 202
     else
-      render json: { errors: user.errors }, status: 422
+      user = User.new
+      user.slack_id = params[:slack_id]
+      user.email = params[:email]
+      if user.save
+        response = JSON.parse('{"user":
+                            {
+                              "error":"",
+                              "email":"'"#{user.email}"'"
+                              }}')
+
+        render json: response, status: 201
+      end
     end
   end
 
@@ -21,6 +36,6 @@ class Api::V1::UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email, :password, :password_confirmation)
+    params.require(:user).permit(:email, :password, :password_confirmation, :slack_id)
   end
 end
