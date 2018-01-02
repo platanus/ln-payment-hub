@@ -8,5 +8,5 @@ class LightningService < PowerTypes::Service.new
   def credentials
     GRPC::Core::ChannelCredentials.new(File.read('/Users/cristobal/Library/Application Support/Lnd/tls.cert'))
   end
-
+  
 end
