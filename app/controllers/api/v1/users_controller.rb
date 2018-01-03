@@ -7,25 +7,25 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def create
-    if User.find_by(slack_id: params[:slack_id])
+    user = User.new
+    user.slack_id = params[:slack_id]
+    user.email = params[:email]
+    if user.save
       response = JSON.parse('{"user":
-                            {
-                              "error":"User already exist"
-                              }}')
-      render json: response, status: 202
-    else
-      user = User.new
-      user.slack_id = params[:slack_id]
-      user.email = params[:email]
-      if user.save
-        response = JSON.parse('{"user":
-                            {
-                              "error":"",
-                              "email":"'"#{user.email}"'"
-                              }}')
+                          {
+                            "error":"",
+                            "email":"'"#{user.email}"'"
+                            }}')
 
-        render json: response, status: 201
-      end
+      render json: response, status: 201
+    else
+      errors = user.errors.full_messages
+      response = JSON.parse('{"user":
+                          {
+                            "error":"'"#{errors.join(", ")}"'",
+                            "email":""
+                            }}')
+      render json: response, status: 202
     end
   end
 

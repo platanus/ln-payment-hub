@@ -4,6 +4,8 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable
+  validates :email, presence: true, uniqueness: true
+  validates :slack_id, presence: true, uniqueness: true
 end
 
 # == Schema Information
