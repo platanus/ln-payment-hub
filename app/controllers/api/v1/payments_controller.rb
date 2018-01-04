@@ -17,7 +17,7 @@ class Api::V1::PaymentsController < ApplicationController
   end
 
   def pay_invoice
-    # TODO: Search for payment into the DB.
+    # TODO: Create the Payment with status pending before LND handles it.
     user = params[:user]
     pay_req = params[:pay_req]
     amount = get_amount_from_invoice(pay_req)
