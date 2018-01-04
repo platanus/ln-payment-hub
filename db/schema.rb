@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 20180102195847) do
   create_table "payments", force: :cascade do |t|
     t.string "pay_req"
     t.integer "amount"
-    t.string "status"
+    t.integer "status"
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

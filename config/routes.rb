@@ -6,10 +6,10 @@ Rails.application.routes.draw do
       get   '/wallet/balance' => 'wallet#get_balance'
       get   '/service/lookup_invoice/:invoice' => 'service#lookup_invoice'
 
-      post  '/users/create'   => 'users#create'
+      post  '/users/create'    => 'users#create'
       post  '/get_user_status' => 'users#show'
 
-      post  '/payments/create_invoice' => 'payments#create'
+      post  '/payments/create_invoice' => 'payments#create_invoice'
       post  '/payments/pay_invoice'    => 'payments#pay_invoice'
     end
   end

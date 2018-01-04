@@ -4,14 +4,12 @@ require 'grpc'
 require 'json'
 
 class Api::V1::ServiceController < ApplicationController
+  include LightningHelper
   respond_to :json
 
   def lookup_invoice
     invoice = params[:invoice]
-    request = Lnrpc::PayReqString.new(pay_req: invoice)
-    puts
-    client = LightningService.new
-    pay_req = client.stub.decode_pay_req(request)
+    pay_req = decode_invoice(invoice)
     response = JSON.parse('{"pay_req":
                             {
                               "num_satoshis":"'"#{pay_req.num_satoshis}"'",

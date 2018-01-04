@@ -1,5 +1,8 @@
 class Payment < ApplicationRecord
   belongs_to :user
+  enum status: [:pending, :completed, :timeout]
+
+
 end
 
 # == Schema Information
@@ -9,7 +12,7 @@ end
 #  id         :integer          not null, primary key
 #  pay_req    :string
 #  amount     :integer
-#  status     :string
+#  status     :integer
 #  user_id    :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null

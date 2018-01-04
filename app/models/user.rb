@@ -6,6 +6,16 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable
   validates :email, presence: true, uniqueness: true
   validates :slack_id, presence: true, uniqueness: true
+
+  def available_balance
+    payments = self.payments.where(status: [0, 1])
+    available_balance = 0
+    payments.each do |payment|
+      available_balance += payment.amount
+    end
+    available_balance
+  end
+
 end
 
 # == Schema Information
