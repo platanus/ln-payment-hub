@@ -59,7 +59,6 @@ class Api::V1::PaymentsController < ApplicationController
   def pay_payment_request(pay_req)
     #TODO: include transaction fee.
     decoded_invoice = decode_invoice(pay_req)
-    amount = decoded_invoice.num_satoshis
     destination_user = decoded_invoice.description
     if User.find_by(slack_id: destination_user).nil?
       # Pay with LN
