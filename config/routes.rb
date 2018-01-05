@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
       # Services.
       get   '/service/lookup_invoice/:invoice' => 'service#lookup_invoice'
+      get   '/service/decrypt_invoice/:invoice' => 'service#decrypt_invoice'
 
       # Users.
       get   '/users/:user/balance' => 'users#balance'

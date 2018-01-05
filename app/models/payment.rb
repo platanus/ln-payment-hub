@@ -1,6 +1,6 @@
 class Payment < ApplicationRecord
   belongs_to :user
-  enum status: [:pending, :completed, :timeout]
+  enum status: [:pending_outgoing, :completed, :pending_incoming]
 
 
 end
@@ -16,6 +16,7 @@ end
 #  user_id    :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  r_hash     :string
 #
 # Indexes
 #

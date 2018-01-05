@@ -5,14 +5,20 @@ require 'json'
 
 class Api::V1::PaymentsController < ApplicationController
   include LightningHelper
+  include PaymentsHelper
   respond_to :json
   skip_before_action :verify_authenticity_token
+  before_action :user_registered?, only: [:create_invoice, :pay_invoice]
 
   def create_invoice
     user = params[:user]
     amount = Integer(params[:amount])
-    pay_req = generate_payment_request(user, amount)
-    response = JSON.parse('{"pay_req": "'"#{pay_req}"'"}')
+    invoice = generate_payment_request(user, amount)
+    pay_req = invoice.payment_request
+    r_hash = to_hex_string(invoice.r_hash)
+    response = JSON.parse('{"pay_req": "'"#{pay_req}"'", "status":"true"}')
+    Payment.create(amount: amount, user: User.find_by(slack_id: user), status: 2, pay_req: pay_req, r_hash: r_hash)
+    CheckPendingInvoicesJob.set(wait: 4.second).perform_later r_hash
     render json: response, status: 201
   end
 
@@ -22,30 +28,27 @@ class Api::V1::PaymentsController < ApplicationController
     pay_req = params[:pay_req]
     amount = get_amount_from_invoice(pay_req)
     payment_response = handle_invoice(user, amount, pay_req)
-    create_payment_if_possible(amount, user, payment_response)
-    response = JSON.parse('{"pay_req": { "payment_error":"'"#{payment_response}"'"}}')
+    status = create_payment_if_possible(amount, user, payment_response)
+    response = JSON.parse('{"pay_req": { "payment_error":"'"#{payment_response}"'", "status":"'"#{status}"'"}}')
     render json: response, status: 201
   end
 
   private
 
   def payment_params
-    params.require(:payment).permit(:amount, :user, :pay_req)
+    params.require(:payment).permit(:amount, :user, :pay_req, :slack_id)
   end
 
   def create_payment_if_possible(amount, slack_id, payment_response)
-    return unless ['', nil].include? payment_response
-    Payment.create(amount: -amount, user: User.find_by(slack_id: slack_id), status: 1)
+    return unless ['', nil, true].include? payment_response
+    payment = Payment.new(amount: -amount, user: User.find_by(slack_id: slack_id), status: 1)
+    payment.save
   end
 
-  def generate_payment_request(user, amount)
-    request = Lnrpc::Invoice.new(value: amount, memo: user)
-    client = LightningService.new
-    client.stub.add_invoice(request).payment_request
-  end
-
-  def user_registered?(slack_id)
-    User.find_by(slack_id: slack_id) != nil
+  def user_registered?
+    return unless User.find_by(slack_id: params[:user]).nil?
+    response = JSON.parse('{"pay_req": { "payment_error":"'"#{t(:user_not_registered)}"'", "status":"false"}}')
+    render json: response, status: 201
   end
 
   def has_user_available_funds?(user, amount)
@@ -55,14 +58,23 @@ class Api::V1::PaymentsController < ApplicationController
 
   def pay_payment_request(pay_req)
     #TODO: include transaction fee.
-    send_payment(pay_req)
+    decoded_invoice = decode_invoice(pay_req)
+    amount = decoded_invoice.num_satoshis
+    destination_user = decoded_invoice.description
+    if User.find_by(slack_id: destination_user).nil?
+      # Pay with LN
+      send_ln_payment(pay_req)
+    else
+      # Pay internally
+      send_internal_payment(pay_req)
+    end
   end
 
   def pay_if_has_available_funds(user, amount, invoice)
-    has_user_available_funds?(user, amount) ? pay_payment_request(invoice) : 'Not enough funds'
+    has_user_available_funds?(user, amount) ? pay_payment_request(invoice) : t(:not_enought_funds)
   end
 
   def handle_invoice(user, amount, invoice)
-    user_registered?(user) ? pay_if_has_available_funds(user, amount, invoice) : 'User not registered'
+    pay_if_has_available_funds(user, amount, invoice)
   end
 end
