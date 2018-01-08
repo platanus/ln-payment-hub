@@ -4,6 +4,9 @@ require 'grpc'
 require 'json'
 
 class Api::V1::WalletController < ApplicationController
+  include AuthenticationHelper
+  before_action :authenticate
+
   respond_to :json
 
   def get_balance
@@ -18,4 +21,5 @@ class Api::V1::WalletController < ApplicationController
                               }}')
     respond_with response
   end
+
 end

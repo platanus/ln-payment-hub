@@ -6,7 +6,9 @@ require 'json'
 class Api::V1::ServiceController < ApplicationController
   include LightningHelper
   include PaymentsHelper
+  include AuthenticationHelper
   respond_to :json
+  before_action :authenticate
 
   def lookup_invoice
     invoice = params[:invoice]
@@ -31,7 +33,7 @@ class Api::V1::ServiceController < ApplicationController
                               }}')
     render json: response, status: 201
   end
-  
+
   private
 
   def lookup_db_invoice(payment)

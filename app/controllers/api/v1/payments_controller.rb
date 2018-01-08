@@ -6,9 +6,11 @@ require 'json'
 class Api::V1::PaymentsController < ApplicationController
   include LightningHelper
   include PaymentsHelper
+  include AuthenticationHelper
   respond_to :json
   skip_before_action :verify_authenticity_token
   before_action :user_registered?, only: [:create_invoice, :pay_invoice]
+  before_action :authenticate
 
   def create_invoice
     user = params[:user]

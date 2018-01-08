@@ -1,6 +1,8 @@
 class Api::V1::UsersController < ApplicationController
+  include AuthenticationHelper
   respond_to :json
   skip_before_action :verify_authenticity_token
+  before_action :authenticate
 
   def show
     respond_with User.find(params[:id])
