@@ -31,4 +31,17 @@ module PaymentsHelper
     payment = Payment.find_by(r_hash: r_hash)
     payment.status == 1
   end
+
+  def force_ln_refresh(user)
+    payments = User.find_by(slack_id: user).payments
+    payments = payments.where(status: 2)
+    payments.each do |payment|
+      unless payment.r_hash.nil?
+        if lookup_ln_invoice(payment.r_hash).settled
+          payment.status = 1
+          payment.save
+        end
+      end
+    end
+  end
 end

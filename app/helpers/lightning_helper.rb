@@ -19,8 +19,8 @@ module LightningHelper
     client.stub.decode_pay_req(request)
   end
 
-  def lookup_ln_invoice(invoice)
-    request = Lnrpc::PaymentHash.new(r_hash_str: invoice)
+  def lookup_ln_invoice(r_hash)
+    request = Lnrpc::PaymentHash.new(r_hash_str: r_hash)
     client = LightningService.new
     client.stub.lookup_invoice(request)
   end
