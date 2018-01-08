@@ -30,6 +30,5 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
   user_not_registered: "User not registered"
   not_enought_funds: "Not enough funds"
