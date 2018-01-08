@@ -21,8 +21,4 @@ Rails.application.configure do
   config.assets.debug = true
   config.assets.quiet = true
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
-
-  config.tls_cert_path = '/Users/cristobal/Library/Application Support/Lnd/tls.cert'
-  config.rpc_server = 'localhost:10009'
-  config.lita_server = 'http://localhost:8080'
 end

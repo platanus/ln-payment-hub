@@ -14,11 +14,7 @@ Rails.application.configure do
   config.i18n.fallbacks = true
   config.active_support.deprecation = :notify
   config.log_formatter = ::Logger::Formatter.new
-
-  config.tls_cert_path = '/Users/cristobal/Library/Application Support/Lnd/tls.cert'
-  config.rpc_server = 'localhost:10009'
-  config.lita_server = 'http://localhost:8080'
-
+  
   if ENV["RAILS_LOG_TO_STDOUT"].present?
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter

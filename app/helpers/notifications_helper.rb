@@ -1,7 +1,7 @@
 require "httparty"
 module NotificationsHelper
   def notify_user_payment(user, amount)
-    HTTParty.post(Rails.configuration.lita_server + '/notify_payment',
+    HTTParty.post(ENV['LITA_SERVER'] + '/notify_payment',
                     :body => {  :user => user,
                                 :satoshis => amount,
                     }.to_json,
