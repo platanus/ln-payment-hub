@@ -20,7 +20,7 @@ class Api::V1::PaymentsController < ApplicationController
     r_hash = to_hex_string(invoice.r_hash)
     response = JSON.parse('{"pay_req": "'"#{pay_req}"'", "status":"true"}')
     Payment.create(amount: amount, user: User.find_by(slack_id: user), status: 2, pay_req: pay_req, r_hash: r_hash)
-    expiry = 60
+    expiry = 180
     CheckPendingInvoicesJob.set(wait: 4.second).perform_later r_hash, expiry
     render json: response, status: 201
   end

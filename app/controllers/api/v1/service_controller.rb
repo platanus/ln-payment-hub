@@ -19,7 +19,7 @@ class Api::V1::ServiceController < ApplicationController
       payment_success = lookup_ln_invoice(r_hash).settled
     end
     response = JSON.parse('{"pay_req": { "status":"'"#{payment_success}"'" }}')
-    render json: response, status: 201
+    render json: response, status: 200
   end
 
   def decrypt_invoice
@@ -31,7 +31,7 @@ class Api::V1::ServiceController < ApplicationController
                               "destination":"'"#{pay_req.destination}"'",
                               "description":"'"#{pay_req.description}"'"
                               }}')
-    render json: response, status: 201
+    render json: response, status: 200
   end
 
   private

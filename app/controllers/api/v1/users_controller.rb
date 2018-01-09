@@ -17,7 +17,7 @@ class Api::V1::UsersController < ApplicationController
                             "balance":"'"#{user.available_balance}"'"
                             }}')
 
-    render json: response, status: 201
+    render json: response, status: 200
   end
 
   def create
