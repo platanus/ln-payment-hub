@@ -6,7 +6,7 @@ class LightningService < PowerTypes::Service.new
 
   private
   def credentials
-    GRPC::Core::ChannelCredentials.new(File.read(ENV['TLS_CERT_PATH']))
+    GRPC::Core::ChannelCredentials.new(ENV['TLS_CERT'])
   end
 
 end
