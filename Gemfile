@@ -44,7 +44,6 @@ group :development, :test do
   gem 'binding_of_caller'
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
-  gem 'faker'
   gem 'guard-rspec', require: false
   gem 'pry-byebug'
   gem 'pry-rails'
