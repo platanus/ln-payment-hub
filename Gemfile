@@ -21,6 +21,7 @@ gem 'rack-cors', '~> 0.4.0'
 gem 'rails-i18n'
 gem 'responders'
 gem 'sass-rails', '~> 5.0'
+gem 'sidekiq'
 gem 'simple_token_authentication', '~> 1.0'
 gem 'spring'
 gem 'turbolinks', '~> 5'
@@ -54,4 +55,3 @@ end
 group :test do
   gem 'shoulda-matchers', require: false
 end
-

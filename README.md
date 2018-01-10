@@ -41,6 +41,10 @@ If you need to generate data with **development purposes**, you can customize th
 
 ## Internal dependencies
 
+### Queue System
+
+For managing tasks in the background, this project uses [Sidekiq](https://github.com/mperham/sidekiq)
+
 ### Authentication
 
 We are using the great [Devise](https://github.com/plataformatec/devise) library by [PlataformaTec](http://plataformatec.com.br/)
