@@ -11,13 +11,13 @@ Rails.application.routes.draw do
 
       # Users.
       get   '/users/:user/balance' => 'users#balance'
-      post  '/users/create'    => 'users#create'
+      post  '/users/create' => 'users#create'
       post  '/get_user_status' => 'users#show'
 
       # Payments.
-      get   '/payments/force_refresh/:user'     => 'payments#force_refresh'
+      get   '/payments/force_refresh/:user' => 'payments#force_refresh'
       post  '/payments/create_invoice' => 'payments#create_invoice'
-      post  '/payments/pay_invoice'    => 'payments#pay_invoice'
+      post  '/payments/pay_invoice' => 'payments#pay_invoice'
     end
   end
 

@@ -15,11 +15,9 @@ class Api::V1::ServiceController < ApplicationController
     payment = Payment.find_by(pay_req: invoice)
     r_hash = payment.r_hash
     payment_success = lookup_db_invoice(payment)
-    if payment_success == false
-      payment_success = lookup_ln_invoice(r_hash).settled
-    end
+    payment_success = lookup_ln_invoice(r_hash).settled unless payment_success
     response = JSON.parse('{"pay_req": { "status":"'"#{payment_success}"'" }}')
-    render json: response, status: 200
+    render json: response
   end
 
   def decrypt_invoice
@@ -31,7 +29,7 @@ class Api::V1::ServiceController < ApplicationController
                               "destination":"'"#{pay_req.destination}"'",
                               "description":"'"#{pay_req.description}"'"
                               }}')
-    render json: response, status: 200
+    render json: response
   end
 
   private
@@ -39,5 +37,4 @@ class Api::V1::ServiceController < ApplicationController
   def lookup_db_invoice(payment)
     payment.status == 'completed'
   end
-
 end

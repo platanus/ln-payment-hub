@@ -21,5 +21,4 @@ class Api::V1::WalletController < ApplicationController
                               }}')
     respond_with response
   end
-
 end

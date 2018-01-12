@@ -3,7 +3,6 @@ class CheckPendingInvoicesJob < ApplicationJob
   include PaymentsHelper
   include NotificationsHelper
   queue_as :default
-
   def perform(r_hash, expiry)
     if lookup_ln_invoice(r_hash).settled || lookup_internal_payment(r_hash)
       payment = Payment.find_by(r_hash: r_hash)
@@ -17,4 +16,3 @@ class CheckPendingInvoicesJob < ApplicationJob
     end
   end
 end
-

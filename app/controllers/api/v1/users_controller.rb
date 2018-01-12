@@ -12,9 +12,8 @@ class Api::V1::UsersController < ApplicationController
     # TODO: Check if user exists.
     slack_id = params[:user]
     user = User.find_by(slack_id: slack_id)
-    response = JSON.parse('{"user":
-                          {
-                            "balance":"'"#{user.available_balance}"'"
+    response = JSON.parse('{"user": {
+                              "balance":"'"#{user.available_balance}"'"
                             }}')
 
     render json: response, status: 200
@@ -25,21 +24,10 @@ class Api::V1::UsersController < ApplicationController
     user.slack_id = params[:slack_id]
     user.email = params[:email]
     if user.save
-      response = JSON.parse('{"user":
-                          {
-                            "error":"",
-                            "email":"'"#{user.email}"'"
-                            }}')
-
-      render json: response, status: 201
+      respond_successful_creation(user.email)
     else
       errors = user.errors.full_messages
-      response = JSON.parse('{"user":
-                          {
-                            "error":"'"#{errors.join(", ")}"'",
-                            "email":""
-                            }}')
-      render json: response, status: 202
+      respond_error_creation(errors)
     end
   end
 
@@ -48,6 +36,25 @@ class Api::V1::UsersController < ApplicationController
   end
 
   private
+
+  def respond_successful_creation(email)
+    response = JSON.parse('{"user":
+                                {
+                                  "error":"",
+                                  "email":"'"#{email}"'"
+                                }
+                             }')
+    render json: response, status: 201
+  end
+
+  def respond_error_creation(errors)
+    response = JSON.parse('{"user":
+                          {
+                            "error":"'"#{errors.join(', ')}"'",
+                            "email":""
+                            }}')
+    render json: response, status: 202
+  end
 
   def user_params
     params.require(:user).permit(:email, :password, :password_confirmation)

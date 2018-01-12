@@ -1,8 +1,6 @@
 class Payment < ApplicationRecord
   belongs_to :user
   enum status: [:pending_outgoing, :completed, :pending_incoming]
-
-
 end
 
 # == Schema Information

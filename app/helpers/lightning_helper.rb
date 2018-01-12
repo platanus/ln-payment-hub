@@ -8,9 +8,9 @@ module LightningHelper
   end
 
   def send_ln_payment(pay_req)
-  request = Lnrpc::SendRequest.new(payment_request: pay_req)
-  client = LightningService.new
-  client.stub.send_payment_sync(request).payment_error
+    request = Lnrpc::SendRequest.new(payment_request: pay_req)
+    client = LightningService.new
+    client.stub.send_payment_sync(request).payment_error
   end
 
   def decode_invoice(invoice)

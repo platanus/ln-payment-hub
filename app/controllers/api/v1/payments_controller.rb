@@ -11,6 +11,7 @@ class Api::V1::PaymentsController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :user_registered?, only: [:create_invoice, :pay_invoice]
   before_action :authenticate
+  INVOICE_EXPIRY_TIME = 180
 
   def create_invoice
     user = params[:user]
@@ -19,9 +20,9 @@ class Api::V1::PaymentsController < ApplicationController
     pay_req = invoice.payment_request
     r_hash = to_hex_string(invoice.r_hash)
     response = JSON.parse('{"pay_req": "'"#{pay_req}"'", "status":"true"}')
-    Payment.create(amount: amount, user: User.find_by(slack_id: user), status: 2, pay_req: pay_req, r_hash: r_hash)
-    expiry = 180
-    CheckPendingInvoicesJob.set(wait: 4.second).perform_later r_hash, expiry
+    Payment.create(amount: amount,
+                   user: User.find_by(slack_id: user), status: 2, pay_req: pay_req, r_hash: r_hash)
+    CheckPendingInvoicesJob.set(wait: 4.second).perform_later r_hash, INVOICE_EXPIRY_TIME
     render json: response, status: 201
   end
 
@@ -33,7 +34,8 @@ class Api::V1::PaymentsController < ApplicationController
     payment_response = handle_invoice(user, amount, pay_req)
     status = create_payment_if_possible(amount, user, payment_response)
     balance = User.find_by(slack_id: user).available_balance
-    response = JSON.parse('{"pay_req": { "payment_error":"'"#{payment_response}"'", "status":"'"#{status}"'"}, "balance":"'"#{balance}"'"}')
+    response = JSON.parse('{"pay_req": { "payment_error":"'"#{payment_response}"'",
+      "status":"'"#{status}"'"}, "balance":"'"#{balance}"'"}')
     render json: response, status: 201
   end
 
@@ -58,24 +60,26 @@ class Api::V1::PaymentsController < ApplicationController
 
   def user_registered?
     return unless User.find_by(slack_id: params[:user]).nil?
-    response = JSON.parse('{"pay_req": { "payment_error":"'"#{t(:user_not_registered)}"'", "status":"false"}}')
+    response = JSON.parse(
+      '{"pay_req": { "payment_error":"'"#{t(:user_not_registered)}"'", "status":"false"}}'
+    )
     render json: response, status: 201
   end
 
   def has_user_available_funds?(user, amount)
-    #TODO: include transaction fee.
+    # TODO: include transaction fee.
     User.find_by(slack_id: user).available_balance >= amount
   end
 
   def pay_payment_request(pay_req)
-    #TODO: include transaction fee.
+    # TODO: include transaction fee.
     decoded_invoice = decode_invoice(pay_req)
     destination_user = decoded_invoice.description
     if User.find_by(slack_id: destination_user).nil?
-      # Pay with LN
+      # Pay with LN.
       send_ln_payment(pay_req)
     else
-      # Pay internally
+      # Pay internally.
       send_internal_payment(pay_req)
     end
   end
