@@ -21,10 +21,24 @@
 #
 
 module PaymentsHelper
-  def send_internal_payment(pay_req)
+  def create_payment(amount, slack_id)
+    payment = Payment.new(amount: -amount, user: User.find_by(slack_id: slack_id), status: 1)
+    if payment.save
+      'success'
+    else
+      'internal_error'
+    end
+  end
+
+  def send_internal_payment(pay_req, user)
     recipient_payment = Payment.find_by(pay_req: pay_req)
-    recipient_payment.status = 1
-    recipient_payment.save
+    if recipient_payment.user.id != User.find_by(slack_id: user).id
+      recipient_payment.status = 1
+      recipient_payment.save
+      'success'
+    else
+      'same_user_error'
+    end
   end
 
   def lookup_internal_payment(r_hash)

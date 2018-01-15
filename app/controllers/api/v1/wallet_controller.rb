@@ -5,7 +5,7 @@ require 'json'
 
 class Api::V1::WalletController < ApplicationController
   include AuthenticationHelper
-  before_action :authenticate
+  before_action :verify_token
 
   respond_to :json
 

@@ -8,7 +8,7 @@ class Api::V1::ServiceController < ApplicationController
   include PaymentsHelper
   include AuthenticationHelper
   respond_to :json
-  before_action :authenticate
+  before_action :verify_token
 
   def lookup_invoice
     invoice = params[:invoice]

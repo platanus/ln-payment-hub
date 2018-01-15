@@ -24,4 +24,9 @@
 #
 
 module UsersHelper
+  def register_user(slack_id)
+    user = User.new
+    user.slack_id = slack_id
+    user.save
+  end
 end

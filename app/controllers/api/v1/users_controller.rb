@@ -2,14 +2,14 @@ class Api::V1::UsersController < ApplicationController
   include AuthenticationHelper
   respond_to :json
   skip_before_action :verify_authenticity_token
-  before_action :authenticate
+  before_action :verify_token
+  before_action :user_registered?, except: [:create]
 
   def show
     respond_with User.find(params[:id])
   end
 
   def balance
-    # TODO: Check if user exists.
     slack_id = params[:user]
     user = User.find_by(slack_id: slack_id)
     response = JSON.parse('{"user": {
