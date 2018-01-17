@@ -13,7 +13,6 @@ module AuthenticationHelper
   end
 
   def user_registered?
-    puts User.find_by(slack_id: params[:user]).nil?
     User.find_by(slack_id: params[:user]).nil? ? handle_user_registration(params[:user]) : true
   end
 

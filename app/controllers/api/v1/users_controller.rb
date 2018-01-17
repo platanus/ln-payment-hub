@@ -31,10 +31,6 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
-  def index
-    respond_with User.all
-  end
-
   private
 
   def respond_successful_creation(email)
