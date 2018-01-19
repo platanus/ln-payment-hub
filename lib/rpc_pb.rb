@@ -2,7 +2,7 @@
 # source: rpc.proto
 
 require 'google/protobuf'
-#require 'google/api/annotations_pb'
+require 'google/api/annotations_pb'
 
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "lnrpc.CreateWalletRequest" do

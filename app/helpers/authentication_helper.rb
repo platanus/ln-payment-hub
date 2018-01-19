@@ -35,8 +35,7 @@ module AuthenticationHelper
             }],
           "code": "403",
           "message": "The user is not registered"
-          }
-    }')
+          }}')
     render json: response, status: 403
   end
 end
