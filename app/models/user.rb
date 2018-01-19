@@ -4,7 +4,6 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :trackable
-  validates :email, uniqueness: true
   validates :slack_id, presence: true, uniqueness: true
 
   def available_balance
@@ -22,7 +21,6 @@ end
 # Table name: users
 #
 #  id                     :integer          not null, primary key
-#  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
 #  reset_password_token   :string
 #  reset_password_sent_at :datetime
@@ -38,6 +36,5 @@ end
 #
 # Indexes
 #
-#  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
