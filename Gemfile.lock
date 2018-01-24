@@ -412,7 +412,7 @@ DEPENDENCIES
   heroku-stage
   httparty
   jbuilder (~> 2.5)
-  pg
+  pg (~> 0.20)
   power-types
   pry-byebug
   pry-rails

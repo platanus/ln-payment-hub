@@ -11,18 +11,19 @@ class Api::V1::PaymentsController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :user_registered?
   before_action :verify_token
-  INVOICE_EXPIRY_TIME = 180
+  INVOICE_EXPIRY = ENV['INVOICE_EXPIRY']
+  INVOICE_POOLING_TIME = ENV['INVOICE_POOLING_TIME']
 
   def create_invoice
     user = params[:user]
     amount = Integer(params[:amount])
-    invoice = generate_payment_request(user, amount)
+    invoice = generate_payment_request(user, amount, INVOICE_EXPIRY)
     pay_req = invoice.payment_request
     r_hash = to_hex_string(invoice.r_hash)
     response = JSON.parse('{"pay_req": "'"#{pay_req}"'", "status":"true"}')
     Payment.create(amount: amount,
                    user: User.find_by(slack_id: user), status: 2, pay_req: pay_req, r_hash: r_hash)
-    CheckPendingInvoicesJob.set(wait: 4.second).perform_later r_hash, INVOICE_EXPIRY_TIME
+    CheckPendingInvoicesJob.set(wait: 4.second).perform_later r_hash, INVOICE_POOLING_TIME
     render json: response, status: 201
   end
 

@@ -25,8 +25,8 @@ module LightningHelper
     client.stub.lookup_invoice(request)
   end
 
-  def generate_payment_request(user, amount)
-    request = Lnrpc::Invoice.new(value: amount, memo: user)
+  def generate_payment_request(user, amount, expiry)
+    request = Lnrpc::Invoice.new(value: amount, memo: user, expiry: expiry)
     client = LightningService.new
     client.stub.add_invoice(request)
   end
