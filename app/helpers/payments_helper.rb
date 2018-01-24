@@ -10,6 +10,7 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  r_hash     :string
+#  fee        :integer
 #
 # Indexes
 #
@@ -21,8 +22,8 @@
 #
 
 module PaymentsHelper
-  def create_payment(amount, slack_id)
-    payment = Payment.new(amount: -amount, user: User.find_by(slack_id: slack_id), status: 1)
+  def complete_payment(payment)
+    payment.status = 1
     if payment.save
       'success'
     else
@@ -30,11 +31,13 @@ module PaymentsHelper
     end
   end
 
-  def send_internal_payment(pay_req, user)
-    recipient_payment = Payment.find_by(pay_req: pay_req)
+  def send_internal_payment(payment, user)
+    recipient_payment = Payment.find_by(pay_req: payment.pay_req)
     if recipient_payment.user.id != User.find_by(slack_id: user).id
       recipient_payment.status = 1
       recipient_payment.save
+      payment.fee = 0
+      payment.save
       'success'
     else
       'same_user_error'

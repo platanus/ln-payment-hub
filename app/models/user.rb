@@ -11,6 +11,9 @@ class User < ApplicationRecord
     available_balance = 0
     payments.each do |payment|
       available_balance += payment.amount
+      unless payment.fee.nil?
+        available_balance -= payment.fee
+      end
     end
     available_balance
   end
