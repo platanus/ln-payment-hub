@@ -33,7 +33,7 @@ module PaymentsHelper
 
   def send_internal_payment(payment, user)
     recipient_payment = Payment.find_by(pay_req: payment.pay_req)
-    if recipient_payment.user.id != User.find_by(slack_id: user).id
+    if payment.user.id != User.find_by(slack_id: user).id
       recipient_payment.status = 1
       recipient_payment.save
       payment.fee = 0
