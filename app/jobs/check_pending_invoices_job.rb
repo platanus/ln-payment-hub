@@ -3,6 +3,8 @@ class CheckPendingInvoicesJob < ApplicationJob
   include PaymentsHelper
   include NotificationsHelper
   queue_as :default
+  INVOICE_POOLING_DELTA = Integer(ENV['INVOICE_POOLING_DELTA'])
+
   def perform(r_hash, expiry)
     if lookup_ln_invoice(r_hash).settled || lookup_internal_payment(r_hash)
       payment = Payment.find_by(r_hash: r_hash)
@@ -11,8 +13,8 @@ class CheckPendingInvoicesJob < ApplicationJob
       user = User.find(payment.user.id)
       notify_user_payment(user.slack_id, payment.amount)
     elsif expiry >= 0
-      expiry -= 4
-      CheckPendingInvoicesJob.set(wait: 4.second).perform_later r_hash, expiry
+      expiry -= INVOICE_POOLING_DELTA
+      CheckPendingInvoicesJob.set(wait: INVOICE_POOLING_DELTA.second).perform_later r_hash, expiry
     end
   end
 end
